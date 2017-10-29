@@ -4,16 +4,20 @@ from scripts.UltraColor import *
 from scripts.textures import *
 from scripts.globals import *
 from scripts.map_engine import *
-
+from scripts.NPC import *
+from scripts.player import *
 pygame.init()
 
 cSec = 0
 cFrame = 0
 FPS = 0
+
+
+
 clock = pygame.time.Clock()
 deltatime = 0
 MapEngine = Map_Engine()
-terrain = MapEngine.load_map("/home/syliel/pygamerpg/scripts/world.map")
+terrain = MapEngine.load_map("/home/syliel/pygamerpg/test.map")
 
 fps_font = pygame.font.SysFont("Ubuntu Light", 20)
 sky = pygame.image.load("/home/syliel/pygamerpg/textures/daysky.png")
@@ -49,6 +53,14 @@ def count_fps():
 
 
 create_window()
+
+player = Player("Mousie")
+player_w, player_h = player.width, player.height
+player_x = ((window_width / 2 - player_w / 2 - Globals.camera_x) / Tiles.Size)
+player_y = ((window_height / 2 - player_h / 2 - Globals.camera_y) / Tiles.Size)
+
+
+
 count_fps()
 isRunning = True
 
@@ -60,12 +72,16 @@ while isRunning:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
                 Globals.camera_move = 1
+                player.facing = "north"
             elif event.key == pygame.K_s:
                 Globals.camera_move = 2
+                player.facing = "south"
             elif event.key == pygame.K_a:
                 Globals.camera_move = 3
+                player.facing = "east"
             elif event.key == pygame.K_d:
                 Globals.camera_move = 4
+                player.facing = "west"
         elif event.type == pygame.KEYUP:
             Globals.camera_move = 0
 
@@ -79,6 +95,10 @@ while isRunning:
     elif Globals.camera_move == 4:
         Globals.camera_x -= 100 * deltatime
 
+    player_x = ((window_width / 2 - player_w / 2 - Globals.camera_x) / Tiles.Size)
+    player_y = ((window_height / 2 - player_h / 2 - Globals.camera_y) / Tiles.Size)
+
+
 
 
 
@@ -86,6 +106,8 @@ while isRunning:
    #render graphics
     window.blit(Sky, (0, 0))
     window.blit(terrain, (Globals.camera_x, Globals.camera_y))
+
+    player.render(window, (window_width / 2 - player_w / 2, window_height / 2 - player_h / 2))
     # Render terrain
 
 

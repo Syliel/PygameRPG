@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import pygame, sys, math
+import pygame, sys, math, time
 from scripts.UltraColor import *
 from scripts.textures import *
 
@@ -23,6 +23,35 @@ def export_map(file):
     #Write Map File
     with open(file, "w") as mapfile:
         mapfile.write(map_data)
+
+def load_map(file):
+    global tile_data, tile_size
+    with open(file, "r") as mapfile:
+        map_data = mapfile.read()
+
+    map_data = map_data.split("-")
+
+    map_size = map_data[len(map_data) - 1]
+    map_data.remove(map_size)
+    map_size = map_size.split(",")
+    map_size[0] = int(map_size[0]) * Tiles.Size
+    map_size[1] = int(map_size[1]) * Tiles.Size
+
+    tiles = []
+
+    for tile in range(len(map_data)):
+        map_data[tile] = map_data[tile].replace("\n", "")
+        tiles.append(map_data[tile].split(":"))
+
+    for tile in tiles:
+        tile[0] = tile[0].split(",")
+        pos = tile[0]
+        for p in pos:
+            pos[pos.index(p)] = int(p)
+        tiles[tiles.index(tile)] = [pos[0] * Tiles.Size, pos[1] * Tiles.Size, tile[1]]
+
+    tile_data = tiles
+
 
 window = pygame.display.set_mode((1280, 720), pygame.HWSURFACE)
 pygame.display.set_caption("Map Editor")
@@ -69,9 +98,9 @@ while isRunning:
                 camera_move = 4
 
             #BRUSHES
-            if event.key == pygame.K_F4:
+            if event.key == pygame.K_r:
                 brush = "r"
-            elif event.key == pygame.K_F1:
+            elif event.key == pygame.K_p:
                 selection = input("Brush Tag: ")
                 brush = selection
 
@@ -80,6 +109,11 @@ while isRunning:
                 name = input("Map Name: ")
                 export_map(name + ".map")
                 print("Map Saved Successfully!")
+
+            elif event.key == pygame.K_F10:
+                name = input("Map Name: ")
+                load_map(name + ".map")
+                print("Map Loaded Successfully")
 
         elif event.type == pygame.KEYUP:
             camera_move = 0
@@ -90,28 +124,30 @@ while isRunning:
             mouse_y = math.floor(mouse_pos[1] / Tiles.Size) * Tiles.Size
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            tile = [mouse_x - camera_x, mouse_y - camera_y, brush] #Keep this as a list
+                tile = [mouse_x - camera_x, mouse_y - camera_y, brush] #Keep this as a list
 
-            #Is a tile already placed here?
-            found = False
-            for t in tile_data:
-                if t[0] == tile[0] and t[1] == tile[1]:
-                    found = True
-                    break
-
-            #If this tile space is empty
-            if not found:
-                if not brush == "r":
-                    tile_data.append(tile)
-                    break
-            #If this space is not empty
-        else:
-            #Are we using the rubber tool?
-            if brush == "r":
+        #Is a tile already placed here?
+                found = False
                 for t in tile_data:
                     if t[0] == tile[0] and t[1] == tile[1]:
-                        tile_data.remove(t)
-                        break
+                        found = True
+
+
+            #If this tile space is empty
+                if not found:
+                    if not brush == "r":
+                        tile_data.append(tile)
+
+            #If this space is not empty
+                else:
+            #Are we using the rubber tool?
+                    if brush == "r":
+                        for t in tile_data:
+                            if t[0] == tile[0] and t[1] == tile[1]:
+                                tile_data.remove(t)
+                                print("Tile Removed")
+                    else:
+                        print("A tile is already placed there!")
     #LOGIC
     if camera_move == 1:
         camera_y += Tiles.Size
