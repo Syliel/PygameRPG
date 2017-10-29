@@ -1,14 +1,19 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import pygame, sys, time
 from scripts.UltraColor import *
 from scripts.textures import *
+from scripts.globals import *
+from scripts.map_engine import *
 
 pygame.init()
 
 cSec = 0
 cFrame = 0
 FPS = 0
-
+clock = pygame.time.Clock()
+deltatime = 0
+MapEngine = Map_Engine()
+terrain = MapEngine.load_map("/home/syliel/pygamerpg/scripts/world.map")
 
 fps_font = pygame.font.SysFont("Ubuntu Light", 20)
 sky = pygame.image.load("/home/syliel/pygamerpg/textures/daysky.png")
@@ -30,7 +35,7 @@ def create_window():
     window = pygame.display.set_mode((window_width, window_height), pygame.HWSURFACE|pygame.DOUBLEBUF)
 
 def count_fps():
-    global cSec, cFrame, FPS
+    global cSec, cFrame, FPS, deltatime
 
     if cSec == time.strftime("%S"):
         cFrame += 1
@@ -38,6 +43,8 @@ def count_fps():
         FPS = cFrame
         cFrame = 0
         cSec = time.strftime("%S")
+        if FPS > 0:
+            deltatime = 1.0 / FPS
 
 
 
@@ -50,22 +57,44 @@ while isRunning:
         if event.type == pygame.QUIT:
             isRunning = False
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                Globals.camera_move = 1
+            elif event.key == pygame.K_s:
+                Globals.camera_move = 2
+            elif event.key == pygame.K_a:
+                Globals.camera_move = 3
+            elif event.key == pygame.K_d:
+                Globals.camera_move = 4
+        elif event.type == pygame.KEYUP:
+            Globals.camera_move = 0
+
     #LOGIC
-    count_fps()
+    if Globals.camera_move == 1:
+        Globals.camera_y += 100 * deltatime
+    elif Globals.camera_move == 2:
+        Globals.camera_y -= 100 * deltatime
+    elif Globals.camera_move == 3:
+        Globals.camera_x += 100 * deltatime
+    elif Globals.camera_move == 4:
+        Globals.camera_x -= 100 * deltatime
+
+
 
 
 
    #render graphics
     window.blit(Sky, (0, 0))
-
+    window.blit(terrain, (Globals.camera_x, Globals.camera_y))
     # Render terrain
-    for x in range(0, 640, Tiles.Size):
-        for y in range(0, 480, Tiles.Size):
-            window.blit(Tiles.Grass, (x, y))
+
 
     show_fps()
 
     pygame.display.update()
+
+    count_fps()
+
 
 pygame.quit()
 sys.exit()

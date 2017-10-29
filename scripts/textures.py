@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import pygame
 
 pygame.init()
@@ -12,6 +12,8 @@ class Tiles:
         surface.blit(bitmap, (0, 0))
         return surface
 
-    Grass = Load_Texture("/home/syliel/pygamerpg/textures/grass2.png", Size)
+    Grass = Load_Texture("/home/syliel/pygamerpg/textures/haileygrass.png", Size)
     Stone = Load_Texture("/home/syliel/pygamerpg/textures/stone.png", Size)
     Water = Load_Texture("/home/syliel/pygamerpg/textures/water.png", Size)
+
+    Texture_Tags = {"1" : Grass, "2": Stone, "3" : Water}
