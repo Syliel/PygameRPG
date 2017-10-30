@@ -170,6 +170,7 @@ while isRunning:
     pygame.display.update()
 
     count_fps()
+    clock.tick(60)
 
 
 pygame.quit()
