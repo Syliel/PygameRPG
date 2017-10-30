@@ -5,6 +5,17 @@ pygame.init()
 
 class Tiles:
     Size = 32
+
+    Blocked = []
+    Blocked_Types = ["3"]
+
+    def Blocked_At(pos):
+        if list(pos) in Tiles.Blocked:
+            return True
+        else:
+            return False
+
+
     def Load_Texture(file, Size):
         bitmap = pygame.image.load(file)
         bitmap = pygame.transform.scale(bitmap, (Size, Size))

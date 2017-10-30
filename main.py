@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-import pygame, sys, time
+import pygame, sys, time, math
 from scripts.UltraColor import *
 from scripts.textures import *
 from scripts.globals import *
 from scripts.map_engine import *
 from scripts.NPC import *
 from scripts.player import *
+from scripts.meloontic_gui import *
 pygame.init()
 
 cSec = 0
@@ -25,6 +26,10 @@ Sky = pygame.Surface(sky.get_size(), pygame.HWSURFACE)
 Sky.blit(sky, (0, 0))
 del sky
 
+logo_img_temp = pygame.image.load("/home/syliel/pygamerpg/textures/daysky.png")
+logo_img = pygame.Surface(logo_img_temp.get_size(), pygame.HWSURFACE)
+logo_img.blit(logo_img_temp, (0, 0))
+del logo_img_temp
 
 def show_fps():
     fps_overlay = fps_font.render(str(FPS), True, Color.Goldenrod)
@@ -60,6 +65,28 @@ player_x = ((window_width / 2 - player_w / 2 - Globals.camera_x) / Tiles.Size)
 player_y = ((window_height / 2 - player_h / 2 - Globals.camera_y) / Tiles.Size)
 
 
+#Initialize GUI
+def Play():
+    Globals.scene = "game"
+
+def Exit():
+    global isRunning
+    isRunning = False
+
+btnPlay = Menu.Button(text = "Play", rect = (0, 0, 300, 60), tag = ("menu", None))
+btnPlay.Top = window_height / 2 - btnPlay.Height / 2
+btnPlay.Left = window_width / 2 - btnPlay.Width / 2
+btnPlay.Command = Play
+
+btnExit = Menu.Button(text = "Exit", rect = (0, 0, 300, 60), tag = ("menu", None))
+btnExit.Left = btnPlay.Left
+btnExit.Top = btnPlay.Top + btnExit.Height + 3
+btnExit.Command = Exit
+
+menuTitle = Menu.Text(text = "Welcome to the RPG", color = Color.Cyan, font = Font.Large)
+menuTitle.Left , menuTitle.Top = window_width / 2 - menuTitle.Width / 2, 0
+
+logo = Menu.Image(bitmap = logo_img)
 
 count_fps()
 isRunning = True
@@ -85,18 +112,36 @@ while isRunning:
         elif event.type == pygame.KEYUP:
             Globals.camera_move = 0
 
-    #LOGIC
-    if Globals.camera_move == 1:
-        Globals.camera_y += 100 * deltatime
-    elif Globals.camera_move == 2:
-        Globals.camera_y -= 100 * deltatime
-    elif Globals.camera_move == 3:
-        Globals.camera_x += 100 * deltatime
-    elif Globals.camera_move == 4:
-        Globals.camera_x -= 100 * deltatime
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:#Left click
+                #Handle button click events
+                for btn in Menu.Button.All:
+                    if btn.Tag[0] == Globals.scene and btn.Rolling:
+                        if btn.Command != None:
+                            btn.Command()  #Do Button Event
+                        btn.Rolling = False
+                        break    #Exit Loop
 
-    player_x = ((window_width / 2 - player_w / 2 - Globals.camera_x) / Tiles.Size)
-    player_y = ((window_height / 2 - player_h / 2 - Globals.camera_y) / Tiles.Size)
+
+    #RENDER SCENE
+    if Globals.scene == "game":
+
+    #LOGIC
+        if Globals.camera_move == 1:
+            if not Tiles.Blocked_At((round(player_x), math.floor(player_y))):
+                Globals.camera_y += 100 * deltatime
+        elif Globals.camera_move == 2:
+            if not Tiles.Blocked_At((round(player_x), math.ceil(player_y))):
+                Globals.camera_y -= 100 * deltatime
+        elif Globals.camera_move == 3:
+            if not Tiles.Blocked_At((math.floor(player_x), round(player_y))):
+                Globals.camera_x += 100 * deltatime
+        elif Globals.camera_move == 4:
+            if not Tiles.Blocked_At((math.ceil(player_x), round(player_y))):
+                Globals.camera_x -= 100 * deltatime
+
+        player_x = ((window_width / 2 - player_w / 2 - Globals.camera_x) / Tiles.Size)
+        player_y = ((window_height / 2 - player_h / 2 - Globals.camera_y) / Tiles.Size)
 
 
 
@@ -104,11 +149,20 @@ while isRunning:
 
 
    #render graphics
-    window.blit(Sky, (0, 0))
-    window.blit(terrain, (Globals.camera_x, Globals.camera_y))
+        window.blit(Sky, (0, 0))
+        window.blit(terrain, (Globals.camera_x, Globals.camera_y))
 
-    player.render(window, (window_width / 2 - player_w / 2, window_height / 2 - player_h / 2))
-    # Render terrain
+        player.render(window, (window_width / 2 - player_w / 2, window_height / 2 - player_h / 2))
+    # PROCESS MENU
+
+    elif Globals.scene == "menu":
+        window.fill(Color.Fog)
+
+        logo.Render(window)
+        menuTitle.Render(window)
+        for btn in Menu.Button.All:
+            if btn.Tag[0] == "menu":
+                btn.Render(window)
 
 
     show_fps()
