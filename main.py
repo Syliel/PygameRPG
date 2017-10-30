@@ -83,7 +83,7 @@ btnExit.Left = btnPlay.Left
 btnExit.Top = btnPlay.Top + btnExit.Height + 3
 btnExit.Command = Exit
 
-menuTitle = Menu.Text(text = "Welcome to the RPG", color = Color.Cyan, font = Font.Large)
+menuTitle = Menu.Text(text = "Welcome to the RPG", color = Color.BlanchedAlmond, font = Font.Large)
 menuTitle.Left , menuTitle.Top = window_width / 2 - menuTitle.Width / 2, 0
 
 logo = Menu.Image(bitmap = logo_img)

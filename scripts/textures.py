@@ -24,7 +24,9 @@ class Tiles:
         return surface
 
     Grass = Load_Texture("/home/syliel/pygamerpg/textures/haileygrass.png", Size)
-    Stone = Load_Texture("/home/syliel/pygamerpg/textures/stone.png", Size)
+    Stone = Load_Texture("/home/syliel/pygamerpg/textures/stone1.png", Size)
     Water = Load_Texture("/home/syliel/pygamerpg/textures/water.png", Size)
+
+
 
     Texture_Tags = {"1" : Grass, "2": Stone, "3" : Water}
