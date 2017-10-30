@@ -18,15 +18,15 @@ FPS = 0
 clock = pygame.time.Clock()
 deltatime = 0
 MapEngine = Map_Engine()
-terrain = MapEngine.load_map("/home/syliel/pygamerpg/test.map")
+terrain = MapEngine.load_map("./test.map")
 
 fps_font = pygame.font.SysFont("Ubuntu Light", 20)
-sky = pygame.image.load("/home/syliel/pygamerpg/textures/daysky.png")
+sky = pygame.image.load("./textures/daysky.png")
 Sky = pygame.Surface(sky.get_size(), pygame.HWSURFACE)
 Sky.blit(sky, (0, 0))
 del sky
 
-logo_img_temp = pygame.image.load("/home/syliel/pygamerpg/textures/daysky.png")
+logo_img_temp = pygame.image.load("./textures/daysky.png")
 logo_img = pygame.Surface(logo_img_temp.get_size(), pygame.HWSURFACE)
 logo_img.blit(logo_img_temp, (0, 0))
 del logo_img_temp

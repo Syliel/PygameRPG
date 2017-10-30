@@ -23,9 +23,9 @@ class Tiles:
         surface.blit(bitmap, (0, 0))
         return surface
 
-    Grass = Load_Texture("/home/syliel/pygamerpg/textures/haileygrass.png", Size)
-    Stone = Load_Texture("/home/syliel/pygamerpg/textures/stone1.png", Size)
-    Water = Load_Texture("/home/syliel/pygamerpg/textures/water.png", Size)
+    Grass = Load_Texture("./textures/haileygrass.png", Size)
+    Stone = Load_Texture("./textures/stone1.png", Size)
+    Water = Load_Texture("./textures/water.png", Size)
 
 
 

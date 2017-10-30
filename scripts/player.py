@@ -8,7 +8,7 @@ class Player:
         self.name = name
         self.facing = "south"
         self.health = 100
-        sprite = pygame.image.load("/home/syliel/pygamerpg/textures/mousie1.png")
+        sprite = pygame.image.load("./textures/mousie1.png")
         size = sprite.get_size()
         self.width = size[0]
         self.height = size[1]
