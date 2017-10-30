@@ -64,6 +64,9 @@ player_w, player_h = player.width, player.height
 player_x = ((window_width / 2 - player_w / 2 - Globals.camera_x) / Tiles.Size)
 player_y = ((window_height / 2 - player_h / 2 - Globals.camera_y) / Tiles.Size)
 
+#Initialize Music
+pygame.mixer.music.load("./music/Music.wav")
+pygame.mixer.music.play(-1)
 
 #Initialize GUI
 def Play():
@@ -170,7 +173,7 @@ while isRunning:
     pygame.display.update()
 
     count_fps()
-    clock.tick(60)
+
 
 
 pygame.quit()
