@@ -11,7 +11,7 @@ pygame.init()
 
 
 cSec = 0
-cFrame = 60
+cFrame = 0
 FPS = 0
 
 clock = pygame.time.Clock()
