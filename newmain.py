@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import pygame, sys, time, math, pytmx
+from pytmx.util_pygame import load_pygame
 from scripts.UltraColor import *
 from scripts.textures import *
 from scripts.globals import *
@@ -10,7 +11,7 @@ pygame.init()
 
 
 cSec = 0
-cFrame = 0
+cFrame = 60
 FPS = 0
 
 clock = pygame.time.Clock()
@@ -22,6 +23,8 @@ sky = pygame.image.load("./textures/daysky.png")
 Sky = pygame.Surface(sky.get_size(), pygame.HWSURFACE)
 Sky.blit(sky, (0, 0))
 del sky
+
+
 
 logo_img_temp = pygame.image.load("./textures/daysky.png")
 logo_img = pygame.Surface(logo_img_temp.get_size(), pygame.HWSURFACE)
@@ -41,7 +44,26 @@ def create_window():
     pygame.display.set_caption("RPG")
     clock = pygame.time.Clock()
 
+class TiledMap:
+    def __init__(self, filename):
+        tm = pytmx.load_pygame(filename, pixelalpha=True)
+        self.width = tim.width * tm.tilewidth
+        self.height = tim.height * tim.tileheight
+        self.tmxdata = tm
 
+    def render(self, surface):
+        ti = self.tmxdata.get_tile_image_by_gid
+        for layer in self.tmx.data.visible_layers:
+            if isinstance(layer, pytmx.TiledTileLayer):
+                for x, y, gid, in layer:
+                    tile = ti(gid)
+                    if tile:
+                        surface.blit(tile, (x * self.tmxdata.tilewidth, y * self.tmxdata.tileheight))
+
+    def make_map(self):
+        temp_surface = pg.Surface((self.width, self.height))
+        self.render(temp_surface)
+        return temp_surface
 
 def count_fps():
     global FPS, deltatime
@@ -86,7 +108,6 @@ logo = Menu.Image(bitmap = logo_img)
 
 count_fps()
 isRunning = True
-gameMap = pytmx.load_pygame("./test2.map")
 while isRunning:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -123,6 +144,7 @@ while isRunning:
     #RENDER SCENE
     if Globals.scene == "game":
 
+
     #LOGIC
         if Globals.camera_move == 1:
             if not Tiles.Blocked_At((round(player_x), math.floor(player_y))):
@@ -144,11 +166,6 @@ while isRunning:
 
    #render graphics
         window.blit(Sky, (0, 0))
-        for layer in gameMap.visible_layers:
-            for x, y, gid in layer:
-                tile = gameMap.get_tile_image_by_gid(gid)
-                window.blit(tile, (x * gameMap.tilewidth, y * gameMap.tileheight))
-
         player.render(window, (display_width / 2 - player_w / 2, display_height / 2 - player_h / 2))
     # PROCESS MENU
 

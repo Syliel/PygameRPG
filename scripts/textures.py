@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import pygame
+from scripts.UltraColor import *
 
 pygame.init()
 
@@ -16,17 +17,21 @@ class Tiles:
             return False
 
 
-    def Load_Texture(file, Size):
+    def Load_Texture(file, posx, posy, width, height):
         bitmap = pygame.image.load(file)
-        bitmap = pygame.transform.scale(bitmap, (Size, Size))
-        surface = pygame.Surface((Size, Size), pygame.HWSURFACE|pygame.SRCALPHA)
-        surface.blit(bitmap, (0, 0))
-        return surface
-
-    Grass = Load_Texture("./textures/haileygrass.png", Size)
-    Stone = Load_Texture("./textures/stone1.png", Size)
-    Water = Load_Texture("./textures/water.png", Size)
+        image = pygame.Surface([width, height], pygame.HWSURFACE|pygame.SRCALPHA)
+        image.blit(bitmap, (0, 0), (posx, posy, width, height))
+        image.set_colorkey(Color.Black)
+        return image
 
 
 
-    Texture_Tags = {"1" : Grass, "2": Stone, "3" : Water}
+    Grass = Load_Texture("./textures/Grass2.png", 0, 0, 32, 32)
+    Stone = Load_Texture("./textures/stone1.png", 0, 0, 32, 32)
+    Water = Load_Texture("./textures/water.png", 0, 0, 32, 32)
+    Grass1 = Load_Texture("./textures/badborder.png", 32, 0, 32, 32)
+    Texture_Tags = {"1" : Grass, "2": Stone, "3" : Water, "4" : Grass1}
+
+
+
+

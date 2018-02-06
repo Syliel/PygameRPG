@@ -3,22 +3,21 @@ import pygame, sys, time, math
 from scripts.UltraColor import *
 from scripts.textures import *
 from scripts.globals import *
-from scripts.map_engine import *
+from scripts.mapengine import *
 from scripts.NPC import *
 from scripts.player import *
 from scripts.meloontic_gui import *
+from os import path
 pygame.init()
-
+window_width = 800
+window_height = 600
 cSec = 0
 cFrame = 0
 FPS = 0
 
-
-
 clock = pygame.time.Clock()
 deltatime = 0
-MapEngine = Map_Engine()
-terrain = MapEngine.load_map("./test.map")
+
 
 fps_font = pygame.font.SysFont("Ubuntu Light", 20)
 sky = pygame.image.load("./textures/daysky.png")
@@ -26,10 +25,19 @@ Sky = pygame.Surface(sky.get_size(), pygame.HWSURFACE)
 Sky.blit(sky, (0, 0))
 del sky
 
+
+
+
 logo_img_temp = pygame.image.load("./textures/daysky.png")
 logo_img = pygame.Surface(logo_img_temp.get_size(), pygame.HWSURFACE)
 logo_img.blit(logo_img_temp, (0, 0))
 del logo_img_temp
+
+game_folder = path.dirname(__file__)
+map_folder = path.join(game_folder, 'maps')
+maps = TiledMap(path.join(map_folder, 'map.tmx'))
+map_img = maps.make_map()
+
 
 def show_fps():
     fps_overlay = fps_font.render(str(FPS), True, Color.Goldenrod)
@@ -37,24 +45,18 @@ def show_fps():
 
 
 def create_window():
-    global window, window_height, window_width, window_title
+    global window, window_height, window_width, window_title, clock
     window_width, window_height = 800, 600
     window_title = "RPG"
     pygame.display.set_caption(window_title)
     window = pygame.display.set_mode((window_width, window_height), pygame.HWSURFACE|pygame.DOUBLEBUF)
+    clock = pygame.time.Clock()
 
 def count_fps():
-    global cSec, cFrame, FPS, deltatime
-
-    if cSec == time.strftime("%S"):
-        cFrame += 1
-    else:
-        FPS = cFrame
-        cFrame = 0
-        cSec = time.strftime("%S")
-        if FPS > 0:
-            deltatime = 1.0 / FPS
-
+    global FPS, deltatime
+    FPS = clock.get_fps()
+    if FPS > 0:
+        deltatime = 1 / FPS
 
 
 create_window()
@@ -152,9 +154,9 @@ while isRunning:
 
 
    #render graphics
-        window.blit(Sky, (0, 0))
-        window.blit(terrain, (Globals.camera_x, Globals.camera_y))
 
+        window.blit(Sky, (0, 0))
+        window.blit(map_img, (Globals.camera_x, Globals.camera_y))
         player.render(window, (window_width / 2 - player_w / 2, window_height / 2 - player_h / 2))
     # PROCESS MENU
 
@@ -171,7 +173,7 @@ while isRunning:
     show_fps()
 
     pygame.display.update()
-
+    clock.tick()
     count_fps()
 
 

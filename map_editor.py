@@ -56,13 +56,16 @@ def load_map(file):
 window = pygame.display.set_mode((1280, 720), pygame.HWSURFACE)
 pygame.display.set_caption("Map Editor")
 clock = pygame.time.Clock()
+screen = pygame.surface.Surface((Tiles.Size, Tiles.Size), pygame.HWSURFACE)
+screen.fill(Color.WithAlpha(100, Color.Black))
 
 txt_font = pygame.font.SysFont("Ubuntu Light", 20)
 
 mouse_pos = 0
 mouse_x, mouse_y = 0, 0
 
-map_width, map_height = 100 * Tiles.Size, 100 * Tiles.Size
+map_width = 100 * Tiles.Size
+map_height = 100 * Tiles.Size
 
 selector = pygame.Surface((Tiles.Size, Tiles.Size), pygame.HWSURFACE|pygame.SRCALPHA)
 selector.fill(Color.WithAlpha(100, Color.CornflowerBlue))
@@ -172,7 +175,7 @@ while isRunning:
 
     #Draw Tile Highlighter (Selector)
     window.blit(selector, (mouse_x, mouse_y))
-
+    screen.blit(screen, (0, 0))
     pygame.display.update()
     clock.tick(60)
 
